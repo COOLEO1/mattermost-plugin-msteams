@@ -4,9 +4,13 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -16,14 +20,16 @@ jobs:
         with:
           go-version: '1.21'
 
-      - name: Build plugin
+      - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y make
-          make dist
+
+      - name: Build plugin
+        run: make dist
 
       - name: Upload plugin artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: plugin-msteams
           path: dist/plugin-msteams.tar.gz
